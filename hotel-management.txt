@@ -1,0 +1,45 @@
+1.Find the room type with the highest occupancy rate
+Answer:
+       SELECT RoomType, 
+       COUNT(*) AS TotalBookings,
+       (COUNT(*) * 1.0 / (SELECT COUNT(*) FROM Rooms WHERE Status = 'Booked')) AS OccupancyRate
+FROM Reservations
+JOIN Rooms ON Reservations.RoomID = Rooms.RoomID
+GROUP BY RoomType
+ORDER BY OccupancyRate DESC
+LIMIT 1;
+
+2.Calculate the average length of stay for guests
+Answer:
+       SELECT AVG(DATEDIFF(CheckOutDate, CheckInDate)) AS AverageStayLength
+FROM Reservations;
+  
+3.Retrieve the minimum time taken to respond to a service request
+Answer:
+       SELECT MIN(ResponseTime) AS MinimumResponseTime
+FROM ServiceRequests;
+
+
+4.Find the guest who has stayed the most nights in the last year
+Answer:
+       SELECT GuestID, 
+       CONCAT(Guests.FirstName, ' ', Guests.LastName) AS GuestName,
+       SUM(DATEDIFF(CheckOutDate, CheckInDate)) AS TotalNightsStayed
+FROM Reservations
+JOIN Guests ON Reservations.GuestID = Guests.GuestID
+WHERE CheckInDate >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
+GROUP BY GuestID
+ORDER BY TotalNightsStayed DESC
+LIMIT 1;
+
+
+5.List the top 5 most requested services
+Answer:
+       SELECT ServiceType, 
+       COUNT(*) AS RequestCount
+FROM ServiceRequests
+GROUP BY ServiceType
+ORDER BY RequestCount DESC
+LIMIT 5;
+
+
