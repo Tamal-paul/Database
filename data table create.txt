@@ -1,0 +1,50 @@
+-- Create Rooms table
+CREATE TABLE Rooms (
+    RoomID INT PRIMARY KEY AUTO_INCREMENT,
+    RoomNumber VARCHAR(10) NOT NULL,
+    RoomType VARCHAR(20) NOT NULL,   -- e.g., Single, Double, Suite
+    PricePerNight DECIMAL(10, 2) NOT NULL,
+    Status ENUM('Available', 'Booked', 'Out of Service') NOT NULL
+);
+
+-- Create Guests table
+CREATE TABLE Guests (
+    GuestID INT PRIMARY KEY AUTO_INCREMENT,
+    FirstName VARCHAR(50) NOT NULL,
+    LastName VARCHAR(50) NOT NULL,
+    ContactInfo VARCHAR(100),
+    LoyaltyPoints INT DEFAULT 0
+);
+
+-- Create Reservations table
+CREATE TABLE Reservations (
+    ReservationID INT PRIMARY KEY AUTO_INCREMENT,
+    GuestID INT,
+    RoomID INT,
+    CheckInDate DATE,
+    CheckOutDate DATE,
+    TotalAmountPaid DECIMAL(10, 2),
+    FOREIGN KEY (GuestID) REFERENCES Guests(GuestID),
+    FOREIGN KEY (RoomID) REFERENCES Rooms(RoomID)
+);
+
+-- Create ServiceRequests table
+CREATE TABLE ServiceRequests (
+    RequestID INT PRIMARY KEY AUTO_INCREMENT,
+    GuestID INT,
+    RoomID INT,
+    RequestDate DATETIME,
+    ServiceType VARCHAR(50),   -- e.g., Room Service, Housekeeping, Maintenance
+    Cost DECIMAL(10, 2),
+    ResponseTime INT,          -- Response time in minutes
+    FOREIGN KEY (GuestID) REFERENCES Guests(GuestID),
+    FOREIGN KEY (RoomID) REFERENCES Rooms(RoomID)
+);
+
+-- Create StaffSchedules table (for completeness)
+CREATE TABLE StaffSchedules (
+    StaffID INT PRIMARY KEY AUTO_INCREMENT,
+    StaffName VARCHAR(100),
+    Role VARCHAR(50),
+    ShiftTime DATETIME
+);
